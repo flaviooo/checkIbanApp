@@ -1,28 +1,28 @@
-Node.js Bootstrap RedMine CheckIban
-===
+# ✅ Node.js Bootstrap RedMine CheckIban
 
-A quick and easy Node.js + Pug template project
-![Image](https://www.csea.it/wp-content/uploads/logo/csea-logo.svg)
-##### Also available for [GIT URL](https://github.com/flaviooo/checkIbanApp.git)
-_ Assuming you have already installed Node...
+![CSEA Logo](https://www.csea.it/wp-content/uploads/logo/csea-logo.svg){:height="60px"}
 
+Un'applicazione Node.js con frontend in **Pug** e backend **Express**, progettata per effettuare controlli IBAN massivi o singoli tramite le API di **PagoPA**.
+
+> 📦 Repository: [github.com/flaviooo/checkIbanApp](https://github.com/flaviooo/checkIbanApp)
+
+---
+
+## 📦 Setup
+
+Assicurati di avere **Node.js** e **npm** installati. Poi esegui:
+
+```bash
 express --view=pug checkIbanApp
 cd checkIbanApp
 npm install
 npm install mariadb
-npm install nodemon --save-dev
 npm install dotenv
+npm install nodemon --save-dev
 
-
-## Usage
-set DEBUG=checkIbanApp:* | npm start
-
-" select a.iban, a.partitaIva "+
-" from (SELECT  distinct b.iban, s.partitaIva "+
-" FROM anagrafica.soggetto s "+
-"   JOIN anagrafica.settoriattivita sa ON s.idsoggetto=sa.idsoggetto "+
-"   JOIN anagrafica.tipologiasoggetto ts ON sa.idTipologia=ts.idtipologia "+
-"   JOIN anagrafica.dettagliotipologia dt ON sa.idTipologia=dt.idTipologia AND sa.iddettaglio = dt.iddettaglio "+
-" LEFT JOIN anagrafica.banca b ON sa.idSettoreattivita = b.idSettoreattivita "+
-" WhERE  test =0   AND ATTIVO = 1 AND predefinita=1 and b.iban is not null and partitaIva IS NOT NULL) a "+
-" group by a.iban, a.partitaIva; ";
+## 📦 Usage
+# Su Windows
+set DEBUG=checkIbanApp:* && npm start
+# Su Unix/Linux/Mac
+DEBUG=checkIbanApp:* npm start
+Per sviluppo continuo: npx nodemon ./bin/www
