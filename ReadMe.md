@@ -1,6 +1,8 @@
 # ✅ Node.js Bootstrap RedMine CheckIban
 
 ![CSEA Logo](https://www.csea.it/wp-content/uploads/logo/csea-logo.svg){:height="60px"}
+<img src="https://www.csea.it/wp-content/uploads/logo/csea-logo.svg" alt="CSEA Logo" height="60"/>
+
 
 Un'applicazione Node.js con frontend in **Pug** e backend **Express**, progettata per effettuare controlli IBAN massivi o singoli tramite le API di **PagoPA**.
 
