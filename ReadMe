@@ -1,3 +1,11 @@
+Node.js Bootstrap RedMine CheckIban
+===
+
+A quick and easy Node.js + Pug template project
+![Image](https://www.csea.it/wp-content/uploads/logo/csea-logo.svg)
+##### Also available for [GIT URL](https://github.com/flaviooo/checkIbanApp.git)
+_ Assuming you have already installed Node...
+
 express --view=pug checkIbanApp
 cd checkIbanApp
 npm install
@@ -5,6 +13,8 @@ npm install mariadb
 npm install nodemon --save-dev
 npm install dotenv
 
+
+## Usage
 set DEBUG=checkIbanApp:* | npm start
 
 " select a.iban, a.partitaIva "+
