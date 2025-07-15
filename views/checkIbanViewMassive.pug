@@ -1,0 +1,63 @@
+extends layout
+
+block content
+  .container
+    h1.text-primary Welcome to #{title}
+    p.lead Elenco IBAN estratti dal database:
+
+    .mb-3
+      strong Stato Validazione: 
+      | #{result.status}
+
+    .mb-3
+      strong Numero di richieste: 
+      | #{result.data.payload.totalItemsCount}
+
+    .mb-3
+      strong Bulk Request ID: 
+      | #{result.data.payload.bulkRequestId}
+
+    if result.data.payload.list && result.data.payload.list.length
+      table.table.table-bordered.table-striped.table-hover
+        thead.thead-dark
+          tr
+            th #
+            th Request Code
+            th Validation Status
+            th Error
+            th Account Value
+            th Account Type
+            th Account BIC Code
+            th Holder Type
+            th Fiscal Code
+            th VAT Code
+            th Tax Code
+            th Bank Business Name
+            th Bank City
+            th Bank Country Code
+            th Bank BIC Code
+            th Bank Branch Name
+        tbody
+          each item, index in result.data.payload.list
+            tr
+              td #{index + 1}
+              td= item.requestCode
+              td= item.validationStatus
+              td= item.error || 'Nessun errore'
+              td= item.account.value
+              td= item.account.valueType
+              td= item.account.bicCode || 'N/A'
+              td= item.accountHolder.type
+              td= item.accountHolder.fiscalCode || 'N/A'
+              td= item.accountHolder.vatCode || 'N/A'
+              td= item.accountHolder.taxCode || 'N/A'
+              if item.bankInfo
+                td= item.bankInfo.businessName || 'N/A'
+                td= item.bankInfo.city || 'N/A'
+                td= item.bankInfo.countryCode || 'N/A'
+                td= item.bankInfo.bicCode || 'N/A'
+                td= item.bankInfo.branchName || 'N/A'
+              else
+                td(colspan='5') Nessuna informazione bancaria disponibile
+    else
+      p.alert.alert-warning Nessun risultato disponibile.

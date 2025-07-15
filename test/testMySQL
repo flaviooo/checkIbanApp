@@ -1,0 +1,66 @@
+const mysql = require('mysql')
+const fs = require('fs');
+
+const connection = mysql.createConnection({
+  host: 'dbmi1.csea.local',
+  user: 'asi_flavio_tuosto',
+  password: process.env.password,
+  database: 'anagrafica'
+})
+
+connection.connect();
+
+const queryAnagraficaCSEA = `
+  SELECT a.iban, a.partitaIva
+  FROM (
+    SELECT DISTINCT b.iban, s.partitaIva
+    FROM anagrafica.soggetto s
+    JOIN anagrafica.settoriattivita sa ON s.idsoggetto = sa.idsoggetto
+    JOIN anagrafica.tipologiasoggetto ts ON sa.idTipologia = ts.idtipologia
+    JOIN anagrafica.dettagliotipologia dt ON sa.idTipologia = dt.idTipologia AND sa.iddettaglio = dt.iddettaglio
+    LEFT JOIN anagrafica.banca b ON sa.idSettoreattivita = b.idSettoreattivita
+    WHERE test = 0 AND ATTIVO = 1 AND predefinita = 1
+      AND b.iban IS NOT NULL AND partitaIva IS NOT NULL
+  ) a
+  GROUP BY a.iban, a.partitaIva;
+`;
+
+connection.query(queryAnagraficaCSEA, (error, results) => {
+ if (error) {
+    console.error('❌ Errore nella query:', error);
+    return;
+  }
+
+  // Filtro dei record validi
+  const validResults = results.filter(row => {
+    return row.iban && row.iban.trim() !== '' &&
+           row.partitaIva && row.partitaIva.trim() !== '';
+  });
+
+  const jsonFormatted = {
+    list: validResults.map((row, index) => ({
+      requestCode: `RQ${(index + 1).toString().padStart(2, '0')}`,
+      account: {
+        value: row.iban,
+        valueType: 'IBAN',
+        bicCode: null
+      },
+      accountHolder: {
+        type: 'PERSON_LEGAL',
+        fiscalCode: null,
+        vatCode: row.partitaIva,
+        taxCode: null
+      }
+    }))
+  };
+
+  fs.writeFile('output.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
+    if (err) {
+      console.error('❌ Errore scrivendo il file JSON:', err);
+    } else {
+      console.log('✅ File JSON generato correttamente: output.json');
+    }
+  });
+
+  connection.end();
+});

@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  .container
+    h1.mt-4.mb-3 Welcome to #{title}
+    p.lead Elenco IBAN estratti dal database:
+
+    form(method='POST', action='/checkIban/single', class='form-horizontal')
+      .form-group
+        label(for='iban', class='control-label col-sm-2') IBAN:
+        .col-sm-10
+          input.form-control(type='text', name='iban', id='iban', placeholder='Inserisci IBAN')
+
+      .form-group
+        label(for='vatCode', class='control-label col-sm-2') Partita IVA:
+        .col-sm-10
+          input.form-control(type='text', name='vatCode', id='vatCode', placeholder='Inserisci Partita IVA')
+
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-primary(type='submit') Verifica IBAN
+
+    if result
+      h2.mt-5 Risultato API PagoPA
+      pre.bg-light.p-3.border.rounded= JSON.stringify(result, null, 2)
