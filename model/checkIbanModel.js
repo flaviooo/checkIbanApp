@@ -65,13 +65,13 @@ module.exports = {
           }))
         };
 
-        fs.writeFile('output.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
-          if (err) {
-            console.error('❌ Errore scrivendo il file JSON:', err);
-          } else {
-            console.log('✅ File JSON generato correttamente: output2.json');
-          }
-        });
+        // fs.writeFile('output.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
+        //   if (err) {
+        //     console.error('❌ Errore scrivendo il file JSON:', err);
+        //   } else {
+        //     console.log('✅ File JSON generato correttamente: output2.json');
+        //   }
+        // });
 
         resolve(jsonFormatted);
         connection.end();

@@ -16,4 +16,24 @@ block content
 
     if result
       h2.mt-5 Risultato API PagoPA
-      pre.bg-light.p-3.border.rounded= JSON.stringify(result, null, 2)
+
+      //- Bottone per scaricare JSON
+      button#downloadBtn.btn.btn-success.mb-3(type='button') Scarica JSON
+
+      pre#jsonResult.bg-light.p-3.border.rounded= JSON.stringify(result, null, 2)
+
+  //- Script per il download
+  script.
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      const data = !{JSON.stringify(result)};
+      const jsonStr = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'result.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
