@@ -1,8 +1,8 @@
 <img src="https://www.csea.it/wp-content/uploads/logo/csea-logo.svg" alt="CSEA Logo" height="68"/>
-# ✅ Node.js Bootstrap RedMine CheckIban
+# ✅ Node.js Bootstrap CheckIban PagpPA
 
 Un'applicazione Node.js con frontend in **Pug** e backend **Express**, progettata per effettuare controlli IBAN massivi o singoli tramite le API di **PagoPA**. 
-> 📦 Documentazione PaoPA API : [https://bankingservices.pagopa.it/docs/platform/apis/pagopa-banking-v4.0](https://bankingservices.pagopa.it/docs/platform/apis/pagopa-banking-v4.0)
+> 📦 Documentazione PagoPA API : [https://bankingservices.pagopa.it/docs/platform/apis/pagopa-banking-v4.0](https://bankingservices.pagopa.it/docs/platform/apis/pagopa-banking-v4.0)
 
 > 📦 Repository: [github.com/flaviooo/checkIbanApp](https://github.com/flaviooo/checkIbanApp)
 
@@ -21,6 +21,7 @@ npm install mariadb
 npm install dotenv
 npm install nodemon --save-dev
 
+crea e configura il file .env da envSample
 ## 📦 Usage
 # Su Windows
 set DEBUG=checkIbanApp:* | npm start
