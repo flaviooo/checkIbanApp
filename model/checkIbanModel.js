@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const fs = require('fs');
 
 const connection = mysql.createConnection({
-  host: 'dbmi1.csea.local',
+  host: '192.168.70.118',
   user: 'asi_flavio_tuosto',
   password: process.env.PASSWORD_DB,
   database: 'anagrafica'
