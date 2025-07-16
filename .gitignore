@@ -12,7 +12,7 @@ test/*.js
 db/*.txt
 *.sql
 *.ext
-
+test/*
 # Ignore Logs
 logs
 *.log

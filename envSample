@@ -6,4 +6,4 @@ URL_MASSIVE = https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/
 URL_SINGLE  = https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder
 
 #DB anegarafica 
-PASSWORD_DB = CG@aSo9&n}_qMnW:!6e'CwM`R
+PASSWORD_DB = password
