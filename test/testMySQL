@@ -1,10 +1,11 @@
+require('dotenv').config({ path: '../.env' });
 const mysql = require('mysql')
 const fs = require('fs');
 
 const connection = mysql.createConnection({
   host: 'dbmi1.csea.local',
   user: 'asi_flavio_tuosto',
-  password: process.env.password,
+  password: process.env.PASSWORD_DB || "CG@aSo9&n}_qMnW:!6e'CwM`R," ,
   database: 'anagrafica'
 })
 

@@ -65,7 +65,7 @@ module.exports = {
           }))
         };
 
-        fs.writeFile('output2.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
+        fs.writeFile('output.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
           if (err) {
             console.error('❌ Errore scrivendo il file JSON:', err);
           } else {

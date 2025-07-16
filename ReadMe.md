@@ -14,6 +14,7 @@ Assicurati di avere **Node.js** e **npm** installati. Poi esegui:
 
 ```bash
 express --view=pug checkIbanApp
+git clone https://github.com/flaviooo/checkIbanApp.git
 cd checkIbanApp
 npm install
 npm install mariadb

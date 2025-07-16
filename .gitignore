@@ -31,7 +31,7 @@ logs
 .vscode/
 *.sw*
 
-*.json
+*t.json
 *.zip
 *.cmd
 *.csv
