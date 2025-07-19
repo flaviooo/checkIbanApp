@@ -4,6 +4,7 @@ const app = require('../app');
 const debug = require('debug')('checkibanapp:server');
 const http = require('http');
 const cfg = require('./../config');
+console.log('🛠️  Name www:', cfg.nameApp || 'Nome App ');
 console.log('🛠️  App environment www:', process.env.NODE_ENV || 'default');
 console.log('🔧  Config loaded → urlMassive:', cfg.urlMassive);
 console.log('🔧  Config loaded → port:', cfg.port);

@@ -3,6 +3,7 @@ const config = require('config');
 
 module.exports = {
   NODE_ENV: process.env.NODE_ENV,
+  nameApp: config.get('app.nameApp'),
   port: config.get('app.port'),
   apiKey: process.env.API_KEY,
   dbPassword: process.env.PASSWORD_DB,

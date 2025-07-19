@@ -21,13 +21,13 @@ cd checkIbanApp
 
 2️⃣ Installa le dipendenze
 
-Mostra sempre dettagli
+ 
 
 npm install
 
 3️⃣ Installa i pacchetti aggiuntivi (se non già presenti)
 
-Mostra sempre dettagli
+ 
 
 npm install config mariadb dotenv
 npm install nodemon --save-dev
@@ -37,13 +37,13 @@ npm install nodemon --save-dev
 
 Copia il file .envSample come .env:
 
-Mostra sempre dettagli
+ 
 
 cp .envSample .env
 
 E personalizza almeno:
 
-Mostra sempre dettagli
+ 
 
 # API PagoPA
 
@@ -59,7 +59,7 @@ PASSWORD_DB=pass
 
 Per configurare l'ambiente di collaudo, crea o modifica il file config/collaudo.json così:
 
-Mostra sempre dettagli
+ 
 
 {
   "services": {
@@ -74,7 +74,7 @@ Mostra sempre dettagli
 🧪 Avvio dell'applicazione
 ✅ Modalità sviluppo
 
-Mostra sempre dettagli
+ 
 
 # Linux/macOS
 NODE_ENV=collaudo node ./bin/www
@@ -87,13 +87,13 @@ $env:NODE_ENV="collaudo"; node ./bin/www
 
 Oppure usa nodemon:
 
-Mostra sempre dettagli
+ 
 
 npm run nodemon:collaudo
 
 Puoi aggiungere questi script nel tuo package.json:
 
-Mostra sempre dettagli
+ 
 
 "scripts": {
   "start:collaudo": "NODE_ENV=collaudo node ./bin/www",
@@ -105,7 +105,7 @@ Mostra sempre dettagli
     In produzione, evita di disabilitare la validazione SSL.
     Evita:
 
-Mostra sempre dettagli
+ 
 
 httpsAgent: new https.Agent({ rejectUnauthorized: false })
 
@@ -113,7 +113,7 @@ httpsAgent: new https.Agent({ rejectUnauthorized: false })
 
 📂 Struttura consigliata del progetto
 
-Mostra sempre dettagli
+ 
 
 checkIbanApp/
 ├── bin/
@@ -136,7 +136,7 @@ checkIbanApp/
     Non caricare il file .env nel repository GitHub.
     Aggiungilo a .gitignore:
 
-Mostra sempre dettagli
+ 
 
 echo ".env" >> .gitignore
 
@@ -146,6 +146,3 @@ echo ".env" >> .gitignore
 
 Pull request e suggerimenti sono benvenuti! Apri una issue o proponi una modifica.
 📝 Licenza
-
-Questo progetto è distribuito sotto licenza MIT.
-"""

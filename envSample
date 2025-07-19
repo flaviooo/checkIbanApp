@@ -1,9 +1,6 @@
 # Collaudo
-API_KEY     = EI92YMSTWIZK5HN
+API_KEY     = CO
 AUTH_SCHEMA = S2S
-URL_MASSIVE = https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder/bulk
-# URL_MASSIVE = https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder/bulk/{bulkRequestId} 
-URL_SINGLE  = https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder
 
 #DB anegarafica 
-PASSWORD_DB = password
+PASSWORD_DB = pass

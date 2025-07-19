@@ -1,6 +1,7 @@
 {
   "app": {
-    "port": "PORT"
+    "port": "PORT",
+    "nameApp":"nameApp"
   },
   "services": {
     "apiKey": "API_KEY",
