@@ -1,12 +1,12 @@
-require('dotenv').config({ path: '../.env' });
+
 const mysql = require('mysql')
 const fs = require('fs');
 
 const connection = mysql.createConnection({
-  host: '192.168.70.118',
-  user: 'asi_flavio_tuosto',
+  host: process.env.HOST_DB,
+  user: process.env.USER_DB,
   password: process.env.PASSWORD_DB || "password" ,
-  database: 'anagrafica'
+  database: process.env.NAME_DB
 })
 
 connection.connect();
