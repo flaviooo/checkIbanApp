@@ -5,6 +5,11 @@ block content
     h1.mt-4.mb-3 Welcome to #{title}
     p.lead Elenco IBAN estratti dal database:
 
+    if errorMessage
+      .alert.alert-danger
+        strong Errore:
+        |  #{errorMessage}
+
     form(method='POST', action='/checkIban/single', class='form-horizontal')
       .form-group
         label(for='iban', class='control-label col-sm-2') IBAN:

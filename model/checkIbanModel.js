@@ -1,10 +1,15 @@
+const cfg = require('./../config');
 const mysql = require('mysql');
-const fs = require('fs');
+
+console.log('🛠️  App environment Model:', process.env.NODE_ENV || cfg.NODE_ENV);
+console.log('🔧  Config loaded → urlMassive:', cfg.urlMassive);
+console.log('🔧  Config loaded → port:', cfg.port);
+console.log('🛠️  App environment model:', cfg.NODE_ENV);
 
 const connection = mysql.createConnection({
   host: '192.168.70.118',
   user: 'asi_flavio_tuosto',
-  password: process.env.PASSWORD_DB,
+  password: cfg.dbPassword,
   database: 'anagrafica'
 });
 
@@ -13,22 +18,8 @@ connection.connect();
 module.exports = {
   getInfoAnagrafica() {
     return new Promise((resolve, reject) => {
-      const queryAnagraficaCSEA = `
-        SELECT a.iban, a.partitaIva
-        FROM (
-          SELECT DISTINCT b.iban, s.partitaIva
-          FROM anagrafica.soggetto s
-          JOIN anagrafica.settoriattivita sa ON s.idsoggetto = sa.idsoggetto
-          JOIN anagrafica.tipologiasoggetto ts ON sa.idTipologia = ts.idtipologia
-          JOIN anagrafica.dettagliotipologia dt ON sa.idTipologia = dt.idTipologia AND sa.iddettaglio = dt.iddettaglio
-          LEFT JOIN anagrafica.banca b ON sa.idSettoreattivita = b.idSettoreattivita
-          WHERE test = 0 AND ATTIVO = 1 AND predefinita = 1
-            AND b.iban IS NOT NULL AND partitaIva IS NOT NULL
-        ) a
-        GROUP BY a.iban, a.partitaIva;
-      `;
-
-      connection.query(queryAnagraficaCSEA, (error, results) => {
+const QUERY_DB = cfg.dbQuery;
+      connection.query(QUERY_DB, (error, results) => {
         if (error) {
           console.error('❌ Errore nella query:', error);
           connection.end();
@@ -39,11 +30,11 @@ module.exports = {
           row.iban && row.iban.trim() !== '' &&
           row.partitaIva && row.partitaIva.trim() !== ''
         );
+        let limite = 2
+        const limitedResults = validResults.slice(0, limite);
 
-        const limitedResults = validResults.slice(0, 999);
-
-        if (validResults.length > 1000) {
-          console.warn(`⚠️ Troppi risultati (${validResults.length}). Esportati solo i primi 1000.`);
+        if (validResults.length > limite) {
+          console.warn(`⚠️ Troppi risultati (${validResults.length}). Esportati solo i primi` + limite);
         } else {
           console.log(`✅ Esportati ${validResults.length} risultati.`);
         }
@@ -51,6 +42,12 @@ module.exports = {
         const jsonFormatted = {
           list: limitedResults.map((row, index) => ({
             requestCode: `RQ${(index + 1).toString().padStart(2, '0')}`,
+            anagraficaInfo: {
+              requestCode: `RQ${(index + 1).toString().padStart(2, '0')}`,
+              ragioneSociale: row.ragioneSociale,
+              riferimentoLegale: row.riferimentoLegale,
+              codiceFiscaleRapp: row.codiceFiscaleRapp
+            },
             account: {
               value: row.iban,
               valueType: 'IBAN',
@@ -72,9 +69,9 @@ module.exports = {
         //     console.log('✅ File JSON generato correttamente: output2.json');
         //   }
         // });
-
-        resolve(jsonFormatted);
         connection.end();
+        resolve(jsonFormatted);
+
 
       });
     });

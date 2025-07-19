@@ -1,15 +1,18 @@
 const express = require('express');
+const cfg = require('./../config');
 const router = express.Router();
 const checkIbanModel = require('../model/checkIbanModel');
 const axios = require('axios');
 const https = require('https');
 
-require('dotenv').config();
+const apiKey = cfg.apiKey;
+const authSchema = cfg.authSchema;
+const massiveUrl = cfg.urlMassive;
 
 const headers = {
     'Content-Type': 'application/json',
-    'Auth-Schema': process.env.AUTH_SCHEMA || 'S2S',
-    'Api-Key': process.env.API_KEY
+    'Auth-Schema': authSchema || 'S2S',
+    'Api-Key': apiKey
 };
 
 // Rotta per visualizzare il form
@@ -41,7 +44,10 @@ router.post('/single', async function (req, res) {
     };
 
     try {
-        const response = await axios.post(process.env.URL_SINGLE, JSON.stringify(bodyList, null, 2), {
+
+const urlSingle = cfg.urlSingle; 
+
+        const response = await axios.post(urlSingle, JSON.stringify(bodyList, null, 2), {
             headers,
             httpsAgent: new https.Agent({ rejectUnauthorized: false })
         });
@@ -61,27 +67,42 @@ router.post('/single', async function (req, res) {
 });
 
 // Rotta per la verifica massiva
+
 router.get('/massive', async function (req, res) {
-    try {
-        const bodyList = await checkIbanModel.getInfoAnagrafica();
+  try {
+    // Ottieni lista input con anagrafica
+    const bodyObj = await checkIbanModel.getInfoAnagrafica();
 
-        const response = await axios.post(process.env.URL_MASSIVE, bodyList, {
-            headers,
-            httpsAgent: new https.Agent({ rejectUnauthorized: false })
-        });
+    // Pulisci per invio: rimuovi campo anagraficaInfo prima della chiamata remota
+    const cleanedRequestList = bodyObj.list.map(({ anagraficaInfo, ...rest }) => rest);
+    // Esegui chiamata al servizio massivo
+    const axiosResponse = await axios.post(massiveUrl, { list: cleanedRequestList }, {
+      headers,
+      httpsAgent: new https.Agent({ rejectUnauthorized: false })
+    });
 
-        res.render('checkIbanViewMassive', {
-            title: "Check IBAN Massivi",
-            result: response
-        });
+    // Estrai dati dalla risposta
+    const payload = axiosResponse.data?.payload || {};
+    const responseList = payload.list || [];
 
-    } catch (error) {
-        console.error("❌ Errore:", error.message);
-        if (error.response) {
-            console.error("❌ Dettagli:", error.response.status, error.response.data);
-        }
-        res.status(500).send("Errore durante la verifica massiva degli IBAN.");
+    // Unisci input originale (con anagraficaInfo) con output del servizio
+    const enrichedList = mergeInputWithResponse(bodyObj.list, responseList); // DEVE usare requestCode
+console.log("✅ ENRICHED LIST:", JSON.stringify(enrichedList, null, 2));
+    // Renderizza la pagina con i dati completi
+   res.render('checkIbanViewMassive', {
+  title: "Check IBAN Massivi",
+  result: enrichedList, // deve essere un array
+  status: axiosResponse.data?.status || 'N/A',
+  totalItems: payload.totalItemsCount || enrichedList.length,
+  bulkRequestId: payload.bulkRequestId || 'N/A'
+});
+} catch (error) {
+    console.error("❌ Errore:", error.message);
+    if (error.response) {
+      console.error("❌ Dettagli:", error.response.status, error.response.data);
     }
+    res.status(500).send("Errore durante la verifica massiva degli IBAN. "+error.code);
+  }
 });
 router.get('/massiveVerificaPage', async function (req, res) {
     try {
@@ -103,7 +124,7 @@ router.post('/massiveVerifica', async function (req, res) {
     try {
     const { bulkRequestId } = req.body;
 
-    const url = `${process.env.URL_MASSIVE}/${bulkRequestId}`;
+    const url = `${massiveUrl}/${bulkRequestId}`;
     console.log("🔗 URL chiamata:", url);
 
     const response = await axios.get(url, {
@@ -125,5 +146,13 @@ router.post('/massiveVerifica', async function (req, res) {
         res.status(500).send("Errore durante la verifica massiva degli IBAN.");
     }
 });
-
+function mergeInputWithResponse(inputList, responseList) {
+  return responseList.map(responseItem => {
+    const inputMatch = inputList.find(input => input.requestCode === responseItem.requestCode);
+    return {
+      ...responseItem,
+      anagraficaInfo: inputMatch?.anagraficaInfo || {}
+    };
+  });
+}
 module.exports = router;

@@ -1,4 +1,7 @@
-require('dotenv').config();
+/* const config      = require('config');   // legge config/*.json in base a NODE_ENV
+const dotenv      = require('dotenv');   // legge il file .env
+dotenv.config();                    // carica le variabili in process.env
+ */
 var createError   = require('http-errors');
 var express       = require('express');
 var path          = require('path');

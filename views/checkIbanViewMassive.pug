@@ -2,62 +2,76 @@ extends layout
 
 block content
   .container
-    h1.text-primary Welcome to #{title}
-    p.lead Elenco IBAN estratti dal database:
+    h1.text-primary #{title}
+    p.lead Elenco IBAN elaborati:
 
     .mb-3
-      strong Stato Validazione: 
-      | #{result.status}
+      strong Stato Validazione globale:
+      |  #{status || 'N/A'}
 
     .mb-3
-      strong Numero di richieste: 
-      | #{result.data.payload.totalItemsCount}
+      strong Numero di richieste:
+      |  #{totalItems || (result && result.length) || 'N/A'}
 
     .mb-3
-      strong Bulk Request ID: 
-      | #{result.data.payload.bulkRequestId}
+      strong Bulk Request ID:
+      |  #{bulkRequestId || 'N/A'}
 
-    if result.data.payload.list && result.data.payload.list.length
+    if result && result.length
       table.table.table-bordered.table-striped.table-hover
         thead.thead-dark
           tr
             th #
             th Request Code
-            th Validation Status
-            th Error
-            th Account Value
-            th Account Type
-            th Account BIC Code
-            th Holder Type
-            th Fiscal Code
-            th VAT Code
-            th Tax Code
-            th Bank Business Name
-            th Bank City
-            th Bank Country Code
-            th Bank BIC Code
-            th Bank Branch Name
+            th Ragione Sociale
+            th Riferimento Legale
+            th CF Rappresentante
+            th IBAN
+            th Tipo Conto
+            th BIC Conto
+            th Tipo Intestatario
+            th CF Intestatario
+            th P.IVA
+            th Codice Fiscale
+            th Stato Validazione
+            th Errore
+            th Banca
+            th Città
+            th Nazione
+            th BIC Banca
         tbody
-          each item, index in result.data.payload.list
-            tr
+          each item, index in result
+            - const account = item.account || {}
+            - const holder = item.accountHolder || {}
+            - const bank = item.bankInfo || {}
+            - const anagrafica = item.anagraficaInfo || {}
+
+            - let rowClass = ''
+            if item.validationStatus === 'OK'
+              - rowClass = 'table-success'
+            else if item.validationStatus === 'PENDING'
+              - rowClass = 'table-warning'
+            else if item.validationStatus === 'KO' || item.error
+              - rowClass = 'table-danger'
+
+            tr(class=rowClass)
               td #{index + 1}
               td= item.requestCode
-              td= item.validationStatus
+              td= anagrafica.ragioneSociale || 'N/A'
+              td= anagrafica.riferimentoLegale || 'N/A'
+              td= anagrafica.codiceFiscaleRapp || 'N/A'
+              td= account.value || 'N/A'
+              td= account.valueType || 'N/A'
+              td= account.bicCode || 'N/A'
+              td= holder.type || 'N/A'
+              td= holder.fiscalCode || 'N/A'
+              td= holder.vatCode || 'N/A'
+              td= holder.taxCode || 'N/A'
+              td= item.validationStatus || 'N/A'
               td= item.error || 'Nessun errore'
-              td= item.account.value
-              td= item.account.valueType
-              td= item.account.bicCode || 'N/A'
-              td= item.accountHolder.type
-              td= item.accountHolder.fiscalCode || 'N/A'
-              td= item.accountHolder.vatCode || 'N/A'
-              td= item.accountHolder.taxCode || 'N/A'
-              if item.bankInfo
-                td= item.bankInfo.businessName || 'N/A'
-                td= item.bankInfo.city || 'N/A'
-                td= item.bankInfo.countryCode || 'N/A'
-                td= item.bankInfo.bicCode || 'N/A'
-                td= item.bankInfo.branchName || 'N/A'
-              else
-                td(colspan='5') Nessuna informazione bancaria disponibile
+              td= bank.businessName || 'N/A'
+              td= bank.city || 'N/A'
+              td= bank.countryCode || 'N/A'
+              td= bank.bicCode || 'N/A'
     else
       p.alert.alert-warning Nessun risultato disponibile.

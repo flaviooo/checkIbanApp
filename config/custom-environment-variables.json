@@ -1,0 +1,15 @@
+{
+  "app": {
+    "port": "PORT"
+  },
+  "services": {
+    "apiKey": "API_KEY",
+    "authSchema": "AUTH_SCHEMA",
+    "urlMassive": "URL_MASSIVE",
+    "urlSingle": "URL_SINGLE"
+  },
+  "db": {
+    "password": "PASSWORD_DB",
+    "query": "QUERY_DB"
+  }
+}
