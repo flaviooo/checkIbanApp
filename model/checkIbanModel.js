@@ -1,16 +1,12 @@
 const cfg = require('./../config');
 const mysql = require('mysql');
 
-console.log('🛠️  App environment Model:', process.env.NODE_ENV || cfg.NODE_ENV);
-console.log('🔧  Config loaded → urlMassive:', cfg.urlMassive);
-console.log('🔧  Config loaded → port:', cfg.port);
-console.log('🛠️  App environment model:', cfg.NODE_ENV);
-
 const connection = mysql.createConnection({
-  host: '192.168.70.118',
-  user: 'asi_flavio_tuosto',
-  password: cfg.dbPassword,
-  database: 'anagrafica'
+
+  host: cfg.dbHost,
+  user: cfg.dbUser,
+    password: cfg.dbPassword,
+  database: cfg.dbName
 });
 
 connection.connect();
