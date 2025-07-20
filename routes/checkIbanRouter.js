@@ -18,6 +18,14 @@ const headers = {
 // Rotta per visualizzare il form
 router.get('/', async function (req, res) {
     try {
+        res.render('index', { title: "Index IBAN Page" });
+    } catch (error) {
+        console.error("❌ Errore rendering form:", error.message);
+        res.status(500).send("Errore nella visualizzazione del form.");
+    }
+});
+router.get('/singlePage', async function (req, res) {
+    try {
         res.render('checkIbanViewSingle', { title: "Check IBAN Page" });
     } catch (error) {
         console.error("❌ Errore rendering form:", error.message);
@@ -104,6 +112,7 @@ console.log("✅ ENRICHED LIST:", JSON.stringify(enrichedList, null, 2));
     res.status(500).send("Errore durante la verifica massiva degli IBAN. "+error.code);
   }
 });
+
 router.get('/massiveVerificaPage', async function (req, res) {
     try {
     
@@ -120,22 +129,32 @@ router.get('/massiveVerificaPage', async function (req, res) {
         res.status(500).send("Errore durante la verifica massiva degli IBAN.");
     }
 });
+
 router.post('/massiveVerifica', async function (req, res) {
     try {
     const { bulkRequestId } = req.body;
 
     const url = `${massiveUrl}/${bulkRequestId}`;
     console.log("🔗 URL chiamata:", url);
+     // Ottieni lista input con anagrafica
+    const bodyObj = await checkIbanModel.getInfoAnagrafica();
 
     const response = await axios.get(url, {
       headers,
       httpsAgent: new https.Agent({ rejectUnauthorized: false }) // ⚠️ Solo in sandbox
     });
+      console.log("✅ Dati ricevuti:", response.data);
+    const result = mergeByRequestCode(bodyObj, response.data);
+    console.log(JSON.stringify(result, null, 2));
 
-    console.log("✅ Dati ricevuti:", response.data);
+ 
         res.render('checkIbanVerificaMassive', {
             title: "Check IBAN Massivi",
-            result: response.data
+            result: response.data,
+            flash: {
+    error: 'Bulk Request Not Found', // o null
+    info: null
+  }
         });
 
     } catch (error) {
@@ -155,4 +174,33 @@ function mergeInputWithResponse(inputList, responseList) {
     };
   });
 }
+
+function mergeByRequestCode(bodyObj, responseObj) {
+  const responseList = responseObj?.payload?.list || [];
+
+  // Crea una mappa basata su requestId del secondo JSON
+  const responseMap = new Map();
+  responseList.forEach(item => {
+    if (item?.requestId) {
+      responseMap.set(item.requestId, item);
+    }
+  });
+
+  // Effettua l'unione basata su requestCode === requestId
+  const mergedList = bodyObj.list.map(item => {
+    const match = responseMap.get(item.requestCode);
+
+    return {
+      ...item,
+      ...(match && {
+        validationStatus: match.validationStatus || null,
+        error: match.error || null,
+        bankInfo: match.bankInfo || null
+      })
+    };
+  });
+
+  return { list: mergedList };
+}
+
 module.exports = router;

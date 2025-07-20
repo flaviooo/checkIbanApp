@@ -1,8 +1,50 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: 'Titillium Web', sans-serif;
+  background-color: #fff;
+  color: #212529;
 }
 
-a {
-  color: #00B7FF;
+.it-header-slim-wrapper {
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ddd;
+}
+
+.it-header-slim-logo img {
+  max-height: 48px;
+  padding: 4px 0;
+}
+
+.it-header-slim-right-zone-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.it-header-slim-right-zone-list li {
+  margin-left: 1rem;
+}
+
+.it-link {
+  color: #0056b3;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.it-link:hover,
+.it-link:focus {
+  color: #003c7e;
+  text-decoration: underline;
+}
+
+footer.it-footer {
+  background-color: #003c7e;
+  color: #ffffff;
+}
+
+footer.it-footer a {
+  color: #aad4ff;
+}
+
+footer.it-footer a:hover {
+  text-decoration: underline;
 }
