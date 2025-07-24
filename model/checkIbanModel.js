@@ -1,24 +1,16 @@
 const cfg = require('./../config');
-const mysql = require('mysql');
+pool = cfg.pool;
 
-const connection = mysql.createConnection({
-
-  host: cfg.dbHost,
-  user: cfg.dbUser,
-    password: cfg.dbPassword,
-  database: cfg.dbName
-});
-
-connection.connect();
+//const mysql = require('mysql');
 
 module.exports = {
   getInfoAnagrafica() {
     return new Promise((resolve, reject) => {
-const QUERY_DB = cfg.dbQuery;
-      connection.query(QUERY_DB, (error, results) => {
+      const QUERY_DB = cfg.dbQuery;
+
+      pool.query(QUERY_DB, (error, results) => {
         if (error) {
           console.error('❌ Errore nella query:', error);
-          connection.end();
           return reject(error);
         }
 
@@ -26,11 +18,12 @@ const QUERY_DB = cfg.dbQuery;
           row.iban && row.iban.trim() !== '' &&
           row.partitaIva && row.partitaIva.trim() !== ''
         );
-        let limite = 2
+
+        const limite = cfg.limitQuery;
         const limitedResults = validResults.slice(0, limite);
 
         if (validResults.length > limite) {
-          console.warn(`⚠️ Troppi risultati (${validResults.length}). Esportati solo i primi` + limite);
+          console.warn(`⚠️ Troppi risultati (${validResults.length}). Esportati solo i primi ${limite}`);
         } else {
           console.log(`✅ Esportati ${validResults.length} risultati.`);
         }
@@ -57,18 +50,14 @@ const QUERY_DB = cfg.dbQuery;
             }
           }))
         };
-
-        // fs.writeFile('output.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
+// fs.writeFile('output.json', JSON.stringify(jsonFormatted, null, 2), 'utf8', err => {
         //   if (err) {
         //     console.error('❌ Errore scrivendo il file JSON:', err);
         //   } else {
         //     console.log('✅ File JSON generato correttamente: output2.json');
         //   }
         // });
-        connection.end();
         resolve(jsonFormatted);
-
-
       });
     });
   }

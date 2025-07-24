@@ -3,27 +3,23 @@ extends layout
 block content
   .container
     h1.mt-4.mb-3 Welcome to #{title}
-    p.lead Elenco IBAN estratti dal database:
+    p.lead Verifica IBAN Persona Giuridica:
 
     if errorMessage
-      .alert.alert-danger
+      .alert.alert-danger(role='alert')
         strong Errore:
-        |  #{errorMessage}
+        | #{errorMessage}
 
-    form(method='POST', action='/checkIban/single', class='form-horizontal')
-      .form-group
-        label(for='iban', class='control-label col-sm-2') IBAN:
-        .col-sm-10
-          input.form-control(type='text', name='iban', id='iban', placeholder='Inserisci IBAN')
+    form(method='POST', action='/checkIban/single')
+      .it-form-group
+        label.it-label(for='iban') IBAN
+        input#iban.it-input(type='text', name='iban', placeholder='Inserisci IBAN', required)
 
-      .form-group
-        label(for='vatCode', class='control-label col-sm-2') Partita IVA:
-        .col-sm-10
-          input.form-control(type='text', name='vatCode', id='vatCode', placeholder='Inserisci Partita IVA')
+      .it-form-group
+        label.it-label(for='vatCode') Partita IVA
+        input#vatCode.it-input(type='text', name='vatCode', placeholder='Inserisci Partita IVA')
 
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          button.btn.btn-primary(type='submit') Verifica IBAN
+      button.btn.btn-primary(type='submit') Verifica IBAN
 
     if result
       h2.mt-5 Risultato API PagoPA

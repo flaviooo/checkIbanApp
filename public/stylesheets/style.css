@@ -1,9 +1,11 @@
+/* === FONT & BASE === */
 body {
   font-family: 'Titillium Web', sans-serif;
   background-color: #fff;
   color: #212529;
 }
 
+/* === HEADER === */
 .it-header-slim-wrapper {
   background-color: #f2f2f2;
   border-bottom: 1px solid #ddd;
@@ -36,6 +38,7 @@ body {
   text-decoration: underline;
 }
 
+/* === FOOTER === */
 footer.it-footer {
   background-color: #003c7e;
   color: #ffffff;
@@ -47,4 +50,54 @@ footer.it-footer a {
 
 footer.it-footer a:hover {
   text-decoration: underline;
+}
+
+/* === FORM STYLES (Bootstrap Italia) === */
+.it-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.it-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.it-input,
+.it-select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.it-input::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+
+.it-input:focus,
+.it-select:focus {
+  border-color: #0056b3;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+}
+
+/* === BUTTON === */
+button.btn-primary {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+button.btn-primary:hover {
+  background-color: #004999;
+  border-color: #004080;
 }

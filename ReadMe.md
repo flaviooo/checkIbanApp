@@ -20,31 +20,22 @@ git clone https://github.com/flaviooo/checkIbanApp.git
 cd checkIbanApp
 
 2️⃣ Installa le dipendenze
-
  
-
 npm install
 
 3️⃣ Installa i pacchetti aggiuntivi (se non già presenti)
 
- 
-
 npm install config mariadb dotenv
 npm install nodemon --save-dev
+npm install mongoose
 
 ⚙️ Configurazione
 🗂 .env
 
 Copia il file .envSample come .env:
 
- 
-
 cp .envSample .env
-
 E personalizza almeno:
-
- 
-
 # API PagoPA
 
 API_KEY=OQLZUKB
@@ -84,21 +75,20 @@ set NODE_ENV=collaudo && node ./bin/www
 
 # Windows (PowerShell)
 $env:NODE_ENV="collaudo"; node ./bin/www
+$env:NODE_ENV='collaudo'; node .\test\testMongo.js     
 
 Oppure usa nodemon:
-
- 
 
 npm run nodemon:collaudo
 
 Puoi aggiungere questi script nel tuo package.json:
 
- 
 
-"scripts": {
-  "start:collaudo": "NODE_ENV=collaudo node ./bin/www",
-  "nodemon:collaudo": "NODE_ENV=collaudo nodemon ./bin/www"
-}
+  "scripts": {
+    "start": "node ./bin/www",
+    "start:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; node ./bin/www\"",
+    "nodemon:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; nodemon ./bin/www\""
+  },
 
 ⚠️ Note importanti
 
@@ -114,23 +104,6 @@ httpsAgent: new https.Agent({ rejectUnauthorized: false })
 📂 Struttura consigliata del progetto
 
  
-
-checkIbanApp/
-├── bin/
-│   └── www
-├── config/
-│   ├── default.json
-│   ├── collaudo.json
-│   └── produzione.json
-├── model/
-├── routes/
-├── views/
-│   └── *.pug
-├── .env
-├── app.js
-├── package.json
-└── README.md
-
 🔒 Sicurezza
 
     Non caricare il file .env nel repository GitHub.
@@ -142,7 +115,11 @@ echo ".env" >> .gitignore
 
     Proteggi le credenziali API e database nei file .env.
 
-👨‍💻 Contributi
 
-Pull request e suggerimenti sono benvenuti! Apri una issue o proponi una modifica.
-📝 Licenza
+✅ Modalità sviluppo MongoDB
+test 
+ $env:NODE_ENV='collaudo'; node .\test\testMongoRead.js
+ $env:NODE_ENV='collaudo'; node .\test\testMongoWrite.js
+ $env:NODE_ENV='collaudo'; node .\test\resetMongoDB.js  
+ 
+
