@@ -1,90 +1,96 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
+const app = require('../app');
+const debug = require('debug')('checkibanapp:server');
+const http = require('http');
+const cfg = require('./../config');
+const mongoose = require('mongoose');
 
-var app = require('../app');
-var debug = require('debug')('checkibanapp:server');
-var http = require('http');
+console.log('🛠️  App Name www:', cfg.nameApp || 'Nome App ');
+console.log(`🚀 ${cfg.nameApp} è in esecuzione sulla porta ${cfg.port}`);
+console.log('🛠️  App Environment www:', cfg.NODE_ENV || process.env.NODE_ENV || 'default');
+//console.log('🔧  Config loaded → urlMassivePagoPA:', cfg.urlMassive);
+//console.log('🔧  Config loaded → urlSinglePagoPA:', cfg.urlSingle);
+console.log('🔧  Config loaded → limitQuery:', cfg.limitQuery);
+console.log('🔧  Config loaded → authSchema:', cfg.authSchema || 'S2S');
+console.log('🔧  Config loaded → dbHost:', cfg.dbHost);
+console.log('🔧  Config loaded → dbName:', cfg.dbName)
+console.log('🔧  Config loaded → dbUser:', cfg.dbUser);
+console.log('🔧  Config loaded → dbMongoHost:', cfg.dbMongoHost)
+console.log('🔧  Config loaded → dbMongoName:', cfg.dbMongoName);
 
-/**
- * Get port from environment and store in Express.
- */
 
-var port = normalizePort(process.env.PORT || '3002');
+const port = normalizePort(cfg.port);
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
+const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
 function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+  if (error.syscall !== 'listen') throw error;
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      console.error(`${bind} requires elevated privileges`);
       process.exit(1);
-      break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      console.error(`${bind} is already in use`);
       process.exit(1);
-      break;
     default:
       throw error;
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+// db.js (o direttamente in app.js)
+
+mongoose.connect(cfg.dbMongoHost + cfg.dbMongoName, {
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('🟢 MongoDB connesso');
+});
+
+mongoose.connection.on('error', err => {
+  console.error('🔴 Errore MongoDB:', err.message);
+});
+mongoose.connection.on('disconnected', () => {
+  console.log('🔵 MongoDB disconnesso');
+});
+
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    console.log('🔴 Connessione MongoDB chiusa per terminazione app');
+    process.exit(0);
+  });
+});
+// Gestione chiusura applicazione
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    console.log('🔴 MongoDB chiuso con SIGINT');
+    process.exit(0);
+  });
+});
+
+process.on('SIGTERM', () => {
+  mongoose.connection.close(() => {
+    console.log('🔴 MongoDB chiuso con SIGTERM');
+    process.exit(0);
+  });
+});
+
+  console.log('🟢  Pronto!!!!');

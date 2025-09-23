@@ -1,0 +1,14 @@
+{
+    "app": {
+    "port": 3002,
+    "nameApp": "Check Iban CSEA Prod"
+  },
+  "services": {
+    "authSchema": "S2S",
+    "urlMassive": "http:prod",
+    "urlSingle": "http:prod"
+  },
+  "db": {
+    "query": "select a.iban, a.partitaIva, a.ragioneSociale, a.riferimentoLegale, a.codiceFiscaleRapp from"
+  }
+}
