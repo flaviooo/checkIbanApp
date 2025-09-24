@@ -3,36 +3,39 @@ extends layout
 block content
   .container
     h1.mt-4.mb-3 Welcome to #{title}
-    p.lead Verifica:
+    p.lead Elenco IBAN elaborati: #{bulkRequestId || 'N/A'}
+      .mb-3
+        strong Stato Validazione globale:
+        |  #{status || 'N/A'}
 
-    //- FORM
-    form(method='POST', action='/checkIban/massiveVerifica', class='form-horizontal')
-      .form-group
-        label(for='bulkRequestId', class='control-label col-sm-2') bulkRequestId:
-        .col-sm-10
-          input.form-control(type='text', name='bulkRequestId', id='bulkRequestId', placeholder='Inserisci bulkRequestId')
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          button.btn.btn-primary(type='submit') Verifica bulkRequestId
+      .mb-3
+        strong Numero di richieste:
+        |  #{totalItems || (result && result.length) || 'N/A'}
+     
+    // FORM
+    form(method='POST', action='/checkIban/massiveVerifica')
+      .it-form-group
+        label.it-label(for='bulkRequestId') bulkRequestId
+        input#bulkRequestId.it-input(type='text', name='bulkRequestId', placeholder='Inserisci bulkRequestId', required)
 
-    //- RISULTATI    
+      button.btn.btn-primary(type='submit') Verifica bulkRequestId
+
+    // RISULTATI
     if result
       h2.mt-5 Risultato API PagoPA
 
-      //- Bottoni per scaricare JSON, CSV e XLSX
-      button#downloadBtn.btn.btn-success.mb-3(type='button') Scarica JSON
-      button#downloadCsvBtn.btn.btn-info.mb-3(type='button') Esporta CSV
-      button#downloadXlsxBtn.btn.btn-warning.mb-3(type='button') Esporta XLSX
+      .d-flex.flex-wrap.gap-2.mb-3
+        button#downloadBtn.btn.btn-success(type='button') Scarica JSON
+        button#downloadCsvBtn.btn.btn-info(type='button') Esporta CSV
+        button#downloadXlsxBtn.btn.btn-warning(type='button') Esporta XLSX
 
-      //- Safe extraction dal payload
       - var payload = result || {}
       - var bulkRequestId = payload.bulkRequestId || 'N/A'
       - var bulkStatus = payload.bulkRequestStatus || 'N/A'
       - var total = payload.totalItemsCount || 0
       - var processed = payload.processedItemsCount || 0
-      - var list = payload.list || []
+      - var dataList = payload.list || []
 
-      //- Dati principali
       p
         strong bulkRequestId:
         | #{' ' + bulkRequestId}
@@ -46,8 +49,7 @@ block content
         strong Elementi Elaborati:
         | #{' ' + processed}
 
-      //- Tabella
-      if list.length
+      if dataList.length
         table.table.table-bordered.table-striped.table-sm
           thead
             tr
@@ -63,7 +65,7 @@ block content
               th BIC
               th Filiale
           tbody
-            each item, i in list
+            each item, i in dataList
               - var accountValue = item.account && item.account.value || 'N/A'
               - var ragioneSociale = item.anagraficaInfo && item.anagraficaInfo.ragioneSociale || 'N/A'
               - var riferimentoLegale = item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale || 'N/A'
@@ -89,21 +91,21 @@ block content
       else
         p Nessun dato presente nella lista.
 
-      //- JSON preview
-      pre#jsonResult.bg-light.p-3.border.rounded= JSON.stringify(result, null, 2)
+      //pre#jsonResult.bg-light.p-3.border.rounded= JSON.stringify(result, null, 2)
 
-  //- Include SheetJS CDN (per XLSX)
+  // SheetJS per esportazione XLSX
   script(src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js")
 
-  //- Script per scaricare JSON, CSV e XLSX
+  // SCRIPT EXPORT
   script.
-    // Download JSON
-    document.getElementById('downloadBtn')?.addEventListener('click', function() {
-      var data = !{JSON.stringify(result)};
-      var jsonStr = JSON.stringify(data, null, 2);
-      var blob = new Blob([jsonStr], { type: 'application/json' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
+    var dataList = !{JSON.stringify(dataList)};
+    var resultObj = !{JSON.stringify(result)};
+
+    // Scarica JSON
+    document.getElementById('downloadBtn')?.addEventListener('click', function () {
+      const blob = new Blob([JSON.stringify(resultObj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
       a.href = url;
       a.download = 'result.json';
       document.body.appendChild(a);
@@ -112,56 +114,37 @@ block content
       URL.revokeObjectURL(url);
     });
 
-    // Download CSV
-    document.getElementById('downloadCsvBtn')?.addEventListener('click', function() {
-      var list = !{JSON.stringify(list)};
-      if (!list.length) {
-        alert('Nessun dato da esportare!');
-        return;
-      }
+    // Scarica CSV
+    document.getElementById('downloadCsvBtn')?.addEventListener('click', function () {
+      if (!dataList.length) return alert('Nessun dato da esportare!');
 
-      var headers = [
-        'RequestCode', 'IBAN', 'Ragione Sociale', 'Riferimento Legale', 'Cod. Fisc. Rapp.', 
+      const headers = [
+        'RequestCode', 'IBAN', 'Ragione Sociale', 'Riferimento Legale', 'Cod. Fisc. Rapp.',
         'Intestatario (P.IVA)', 'Stato', 'Banca', 'BIC', 'Filiale'
       ];
 
-      function escapeCSV(value) {
-        if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
-          return '"' + value.replace(/"/g, '""') + '"';
-        }
-        return value;
-      }
+      const escapeCSV = value =>
+        typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))
+          ? '"' + value.replace(/"/g, '""') + '"'
+          : value;
 
-      var rows = list.map(function(item) {
-        var accountValue = item.account && item.account.value || '';
-        var ragioneSociale = item.anagraficaInfo && item.anagraficaInfo.ragioneSociale || '';
-        var riferimentoLegale = item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale || '';
-        var codiceFiscaleRapp = item.anagraficaInfo && item.anagraficaInfo.codiceFiscaleRapp || '';
-        var vatCode = item.accountHolder && item.accountHolder.vatCode || '';
-        var status = item.validationStatus || '';
-        var bank = item.bankInfo && item.bankInfo.businessName || '';
-        var bic = item.bankInfo && item.bankInfo.bicCode || '';
-        var branch = item.bankInfo && item.bankInfo.branchName || '';
+      const rows = dataList.map(item => [
+        escapeCSV(item.requestCode || ''),
+        escapeCSV(item.account && item.account.value || ''),
+        escapeCSV(item.anagraficaInfo && item.anagraficaInfo.ragioneSociale || ''),
+        escapeCSV(item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale || ''),
+        escapeCSV(item.anagraficaInfo && item.anagraficaInfo.codiceFiscaleRapp || ''),
+        escapeCSV(item.accountHolder && item.accountHolder.vatCode || ''),
+        escapeCSV(item.validationStatus || ''),
+        escapeCSV(item.bankInfo && item.bankInfo.businessName || ''),
+        escapeCSV(item.bankInfo && item.bankInfo.bicCode || ''),
+        escapeCSV(item.bankInfo && item.bankInfo.branchName || '')
+      ].join(','));
 
-        return [
-          escapeCSV(item.requestCode),
-          escapeCSV(accountValue),
-          escapeCSV(ragioneSociale),
-          escapeCSV(riferimentoLegale),
-          escapeCSV(codiceFiscaleRapp),
-          escapeCSV(vatCode),
-          escapeCSV(status),
-          escapeCSV(bank),
-          escapeCSV(bic),
-          escapeCSV(branch)
-        ].join(',');
-      });
-
-      var csvContent = [headers.join(','), ...rows].join('\r\n');
-
-      var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
+      const csv = [headers.join(','), ...rows].join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
       a.href = url;
       a.download = 'result.csv';
       document.body.appendChild(a);
@@ -170,36 +153,32 @@ block content
       URL.revokeObjectURL(url);
     });
 
-    // Download XLSX
-    document.getElementById('downloadXlsxBtn')?.addEventListener('click', function() {
-      var list = !{JSON.stringify(list)};
-      if (!list.length) {
-        alert('Nessun dato da esportare!');
-        return;
-      }
+    // Scarica XLSX
+    document.getElementById('downloadXlsxBtn')?.addEventListener('click', function () {
+      if (!dataList.length) return alert('Nessun dato da esportare!');
 
-      var ws_data = [
-        ['RequestCode', 'IBAN', 'Ragione Sociale', 'Riferimento Legale', 'Cod. Fisc. Rapp.', 
+      const ws_data = [
+        ['RequestCode', 'IBAN', 'Ragione Sociale', 'Riferimento Legale', 'Cod. Fisc. Rapp.',
          'Intestatario (P.IVA)', 'Stato', 'Banca', 'BIC', 'Filiale']
       ];
 
-      list.forEach(function(item) {
+      dataList.forEach(item => {
         ws_data.push([
           item.requestCode || '',
-          (item.account && item.account.value) || '',
-          (item.anagraficaInfo && item.anagraficaInfo.ragioneSociale) || '',
-          (item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale) || '',
-          (item.anagraficaInfo && item.anagraficaInfo.codiceFiscaleRapp) || '',
-          (item.accountHolder && item.accountHolder.vatCode) || '',
+          item.account && item.account.value || '',
+          item.anagraficaInfo && item.anagraficaInfo.ragioneSociale || '',
+          item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale || '',
+          item.anagraficaInfo && item.anagraficaInfo.codiceFiscaleRapp || '',
+          item.accountHolder && item.accountHolder.vatCode || '',
           item.validationStatus || '',
-          (item.bankInfo && item.bankInfo.businessName) || '',
-          (item.bankInfo && item.bankInfo.bicCode) || '',
-          (item.bankInfo && item.bankInfo.branchName) || ''
+          item.bankInfo && item.bankInfo.businessName || '',
+          item.bankInfo && item.bankInfo.bicCode || '',
+          item.bankInfo && item.bankInfo.branchName || ''
         ]);
       });
 
-      var wb = XLSX.utils.book_new();
-      var ws = XLSX.utils.aoa_to_sheet(ws_data);
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
       XLSX.utils.book_append_sheet(wb, ws, 'Risultati');
       XLSX.writeFile(wb, 'result.xlsx');
     });

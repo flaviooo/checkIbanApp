@@ -6,7 +6,7 @@ const config = require('config');
 module.exports = {
   NODE_ENV: process.env.NODE_ENV,
   
-  limitQuery: 5,
+  limitQuery: config.get('db.limitQuery'),
   dbMongoHost : process.env.HOST_MONGODB,
   dbMongoName : process.env.NAME_MONGODB,
   nameApp: config.get('app.nameApp'),

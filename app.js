@@ -11,6 +11,7 @@ var logger        = require('morgan');
 var indexRouter     = require('./routes/index');
 var usersRouter     = require('./routes/users');
 var checkIbanRouter = require('./routes/checkIbanRouter');
+var checkIbanMongoRouter = require('./routes/checkIbanMongoRouter');
 
 var app = express();
 
@@ -27,7 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ROUTES
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/checkIban', checkIbanRouter); // <-- gestisce: '/', '/single', '/massive'
+app.use('/checkIban', checkIbanRouter); // <-- 
+app.use('/checkIbanMongo', checkIbanMongoRouter); 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

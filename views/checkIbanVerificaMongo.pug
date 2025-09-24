@@ -1,0 +1,158 @@
+extends layout
+
+block content
+  .container
+    h4.mt-6.mb-3 Welcome to #{title}
+    blockquote.blockquote.blockquote-card.p-4.bg-white.border
+      p.lead.mb-2
+        | Ricerca e visualizza bulkRequestId già salvati.
+        br
+        | Per i bulkRequestId in stato pending effettua la verifica al servizio pagoPA.
+        br
+        | Per i bulkRequestId in stato completed visualizza i dati ricevuti.
+        br
+        | Per effettuare una nuova richiesta MASSIVA al servizio pagoPA Check IBAN clicca sul pulsante in fondo alla pagina.
+
+          
+    p.text-sm-left Numero di richieste in PENDING 
+      strong #{ (bulkRequestIdListP && bulkRequestIdListP.length) || 'N/A'}  
+      | che contengono 
+      strong #{ allListsCombinedPCount || 'N/A'}
+      |  IBAN totali.
+     
+    p.text-sm-left Numero di richieste in COMPLETED  
+      strong  #{ (bulkRequestIdListC && bulkRequestIdListC.length) || 'N/A'}  
+      | con contengono 
+      strong #{ result && result.length || 'N/A'}
+      |  IBAN totali.
+ 
+    if bulkRequestIdListP && bulkRequestIdListP.length
+      form(method='POST', action='/checkIban/massiveVerifica')
+        .it-form-group.d-flex.align-items-end.gap-2
+          .flex-grow-1
+            label.it-label(for='bulkRequestId') Seleziona un bulkRequestId in stato PENDING
+            select#bulkRequestId.it-input(name='bulkRequestId', required)
+              each id in bulkRequestIdListP
+                option(value=id)= id
+          button.btn.btn-primary(type='submit') Verifica PENDING
+
+      form(method='POST', action='/checkIbanMongo/checkIbanMongo')
+        .it-form-group.d-flex.align-items-end.gap-2
+          .flex-grow-1
+            label.it-label(for='bulkRequestId') Seleziona un bulkRequestId in stato COMPLETED
+            select#bulkRequestId.it-input(name='bulkRequestId', required)
+              each id in bulkRequestIdListC
+                option(value=id)= id
+          button.btn.btn-primary(type='submit') Verifica COMPLETED 
+    else
+      p Nessun bulkRequestId disponibile.
+   
+    form(method='POST', action='/checkIbanMongo/checkIbanMongo')
+      .it-form-group.d-flex.align-items-end.gap-2
+          .flex-grow-1
+            label.it-label(for='bulkRequestIdC') Inserisci manualmente un bulkRequestId in stato COMPLETED:
+            select#bulkRequestIdC.it-input(type='text', name='bulkRequestIdC',  required)
+              each id in bulkRequestIdListC
+                option(value=id)= id
+          button.btn.btn-primary.mt-2(type='submit') Verifica Dati Ricevuti
+    .container
+      .row
+        .col-md-6
+          p.text-left Effettua una nuova richiesta MASSIVA servizio pagoPA Check IBAN escludendo gli IBAN già presenti. (lanciare da Collaudo)
+          form(method='POST', action='/checkIbanMongo/massiveUnique')
+            button.btn.btn-outline-secondary(type='submit') Richiesta MASSIVA COL
+
+        .col-md-6
+          p.text-left Effettua una nuova richiesta MASSIVA servizio pagoPA Check passando tutti gli IBAN presenti in Anagrafica Operatori (lanciare da produzione).
+          form(method='POST', action='/checkIbanMongo/massive')
+            button.btn.btn-outline-secondary(type='submit') Richiesta MASSIVA PDR
+
+      .row.mt-4
+        .col
+          button#downloadXlsxBtn.btn.btn-warning(type='button') Scarica Excel
+
+    // RISULTATI
+    if result && result.length
+      h3.mt-5 Risultato API PagoPA
+
+      - var dataList = result || []
+
+      if dataList.length
+        table.table.table-bordered.table-striped.table-sm
+          thead
+            tr
+              th #
+              th RequestCode
+              th IBAN
+              th Ragione Sociale
+              th Riferimento Legale
+              th Cod. Fisc. Rapp.
+              th Intestatario (P.IVA)
+              th Stato
+              th Banca
+              th BIC
+              th Filiale
+          tbody
+            each item, i in dataList
+              - var accountValue = (item.account && item.account.value) || 'N/A'
+              - var ragioneSociale = (item.anagraficaInfo && item.anagraficaInfo.ragioneSociale) || 'N/A'
+              - var riferimentoLegale = (item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale) || 'N/A'
+              - var codiceFiscaleRapp = (item.anagraficaInfo && item.anagraficaInfo.codiceFiscaleRapp) || 'N/A'
+              - var vatCode = (item.accountHolder && item.accountHolder.vatCode) || 'N/A'
+              - var status = item.validationStatus || 'N/A'
+              - var bank = (item.bankInfo && item.bankInfo.businessName) || 'N/A'
+              - var bic = (item.bankInfo && item.bankInfo.bicCode) || 'N/A'
+              - var branch = (item.bankInfo && item.bankInfo.branchName) || 'N/A'
+
+              tr(class=status === 'KO' ? 'table-danger' : 'table-success')
+                td #{i + 1}
+                td #{item.requestCode}
+                td #{accountValue}
+                td #{ragioneSociale}
+                td #{riferimentoLegale}
+                td #{codiceFiscaleRapp}
+                td #{vatCode}
+                td #{status}
+                td #{bank}
+                td #{bic}
+                td #{branch}
+      else
+        p Nessun dato presente nella lista.
+
+    // Importa SheetJS per esportazione XLSX
+    script(src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js")
+
+    // Script per esportazione Excel
+    script.
+      const dataList = !{JSON.stringify(dataList || [])};
+
+      document.getElementById('downloadXlsxBtn').addEventListener('click', () => {
+        if (!dataList.length) {
+          alert('Nessun dato da esportare!');
+          return;
+        }
+
+        const headers = [
+          'RequestCode', 'IBAN', 'Ragione Sociale', 'Riferimento Legale', 'Cod. Fisc. Rapp.',
+          'Intestatario (P.IVA)', 'Stato', 'Banca', 'BIC', 'Filiale'
+        ];
+
+        const rows = dataList.map(item => [
+          item.requestCode || '',
+          (item.account && item.account.value) || '',
+          (item.anagraficaInfo && item.anagraficaInfo.ragioneSociale) || '',
+          (item.anagraficaInfo && item.anagraficaInfo.riferimentoLegale) || '',
+          (item.anagraficaInfo && item.anagraficaInfo.codiceFiscaleRapp) || '',
+          (item.accountHolder && item.accountHolder.vatCode) || '',
+          item.validationStatus || '',
+          (item.bankInfo && item.bankInfo.businessName) || '',
+          (item.bankInfo && item.bankInfo.bicCode) || '',
+          (item.bankInfo && item.bankInfo.branchName) || ''
+        ]);
+
+        const ws_data = [headers, ...rows];
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        XLSX.utils.book_append_sheet(wb, ws, 'Risultati');
+        XLSX.writeFile(wb, 'result.xlsx');
+      });

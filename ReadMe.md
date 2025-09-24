@@ -65,7 +65,9 @@ Per configurare l'ambiente di collaudo, crea o modifica il file config/collaudo.
 🧪 Avvio dell'applicazione
 ✅ Modalità sviluppo
 
- 
+ Per vedere la lista degli script presenti nel tuo package.json da riga di comando, usa:
+
+ npm run;
 
 # Linux/macOS
 NODE_ENV=collaudo node ./bin/www
