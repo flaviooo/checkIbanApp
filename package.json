@@ -5,15 +5,10 @@
   "scripts": {
     "start": "node ./bin/www",
 <<<<<<< HEAD
-    "pm2Start": "pm2 start node ./bin/www --name CheckIban --time -o log/out.log -e log/err.log",
-
-=======
-<<<<<<< HEAD
     "pm2Start": "pm2 start ./bin/www --name CheckIban --time -o log/out.log -e log/err.log",
     
 =======
 >>>>>>> c7d13a84aef31798ca446f783d891b30821003de
->>>>>>> 9c9937b71c6b0590dc3bef2f89f95744c0afec4f
     "start:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; node ./bin/www\"",
     "nodemon:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; nodemon ./bin/www\""
   },
