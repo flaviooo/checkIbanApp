@@ -1,6 +1,13 @@
+NODE_ENV=collaudo
 # Collaudo
-API_KEY     = CO
-AUTH_SCHEMA = S2S
+API_KEY     = I
+#DB anagrafica 
+PASSWORD_DB = R
+USER_DB     = 
+HOST_DB     = 
+NAME_DB     = 
 
-#DB anegarafica 
-PASSWORD_DB = pass
+#DB Mongo
+HOST_MONGODB     = mongodb://
+NAME_MONGODB     = 
+

@@ -1,8 +1,8 @@
 require('dotenv').config();  // carica .env in process.env
 const mysql = require('mysql');
 const config = require('config');
+
 // ✅ Crea un pool riutilizzabile
-console.log('Running in', process.env.NODE_ENV);
 module.exports = {
   
   NODE_ENV: process.env.NODE_ENV,
