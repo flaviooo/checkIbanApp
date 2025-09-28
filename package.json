@@ -4,14 +4,18 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+<<<<<<< HEAD
     "pm2Start": "NODE_ENV='collaudo' pm2 start ./bin/www --name http://192.168.40.30:3002/checkIban --time -o log/out.log -e log/err.log",
     
+=======
+    "pm2Start": "pm2 start ./bin/www --name http://192.168.40.30:3002/checkIban --time -o log/out.log -e log/err.log",
+>>>>>>> 54ba77bf68def68bce0888dfe9258c3eca1d896b
     "start:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; node ./bin/www\"",
     "nodemon:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; nodemon ./bin/www\""
   },
   "dependencies": {
     "axios": "^1.10.0",
-    "config": "^4.0.1",
+    "config": "^4.1.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^17.2.0",
