@@ -16,6 +16,8 @@ test/*
 # Ignore Logs
 logs
 *.log
+log/*
+.~lock.*
 
 # Ignore the build directory
 /dist
