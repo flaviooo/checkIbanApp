@@ -11,7 +11,7 @@ module.exports = {
     urlSingle: "https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder"
   },
   db: {
-    limitQuery: 998,
+  //  limitQuery: 998,
     query: `select a.iban, a.partitaIva, a.ragioneSociale, a.riferimentoLegale, a.codiceFiscaleRapp 
             from (
               SELECT DISTINCT b.idbancaSoggetto, b.iban, s.partitaIva, s.riferimentoLegale, s.codiceFiscaleRapp, s.ragioneSociale
