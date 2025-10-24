@@ -64,7 +64,7 @@ block content
 
         .col-md-6
           p.text-left Effettua una nuova richiesta MASSIVA servizio pagoPA Check passando tutti gli IBAN presenti in Anagrafica Operatori (lanciare da produzione).
-          form(method='POST', action='/checkIbanMongo/massive')
+          form(method='GET', action='/checkIbanMongo/massive')
             button.btn.btn-outline-secondary(type='submit') Richiesta MASSIVA PDR
 
       .row.mt-4
