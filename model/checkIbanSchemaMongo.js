@@ -1,3 +1,4 @@
+const cfg = require('./../config');
 const mongoose = require('mongoose');
 
 const logSchemaMassiva = new mongoose.Schema({
@@ -6,7 +7,7 @@ const logSchemaMassiva = new mongoose.Schema({
   response: Object,
    tipoChiamata: { type: String, default: "Massiva" },
   timestamp: { type: Date, default: Date.now }
-}, { collection: 'checkIbanColl' });
+}, { collection: cfg.dbMongoName });
 
 
 const logSchemaSingle = new mongoose.Schema({
@@ -14,7 +15,7 @@ const logSchemaSingle = new mongoose.Schema({
   response: Object,
    tipoChiamata: { type: String, default: "Singola" },
   timestamp: { type: Date, default: Date.now }
-}, { collection: 'checkIbanColl' });
+}, { collection: cfg.dbMongoName });
 
 const IbanLogMassive = mongoose.model('IbanLogMassive', logSchemaMassiva);
 const IbanLogSingle = mongoose.model('IbanLogSingle', logSchemaSingle);
