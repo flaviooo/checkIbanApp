@@ -4,8 +4,9 @@ const config = require('config');
 
 // ✅ Crea un pool riutilizzabile
 module.exports = {
-  
   NODE_ENV: process.env.NODE_ENV,
+  NODE_APP_INSTANCE: process.env.NODE_APP_INSTANCE,  
+  
   
   limitQuery: config.get('db.limitQuery'),
   dbMongoHost : process.env.HOST_MONGODB,
