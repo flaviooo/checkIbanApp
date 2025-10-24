@@ -29,7 +29,5 @@ module.exports = {
     database: process.env.NAME_DB,
     connectionLimit: 10 // facoltativo, default è 10
 }),
-  
-
-  
+   
 };
