@@ -40,8 +40,6 @@ E personalizza almeno:
 
 API_KEY=OQLZUKB
 
-
-
 # DB Anagrafica
 
 PASSWORD_DB=pass

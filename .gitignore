@@ -10,6 +10,7 @@ etc/key/*flavio*
 etc/key/*rsa*
 test/*.js
 db/*.txt
+output*.json
 *.sql
 *.ext
 test/*
