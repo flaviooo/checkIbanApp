@@ -2,7 +2,7 @@ require('dotenv').config();  // carica .env in process.env
 const mysql = require('mysql');
 const config = require('config');
 
-console.log(process.env.NODE_APP_INSTANCE);
+console.log("------------------"+process.env.NODE_APP_INSTANCE);
 
 // ✅ Crea un pool riutilizzabile
 module.exports = {
