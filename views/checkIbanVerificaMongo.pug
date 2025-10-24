@@ -59,7 +59,7 @@ block content
       .row
         .col-md-6
           p.text-left Effettua una nuova richiesta MASSIVA servizio pagoPA Check IBAN escludendo gli IBAN già presenti. (lanciare da Collaudo)
-          form(method='POST', action='/checkIbanMongo/massiveUnique')
+          form(method='GET', action='/checkIbanMongo/massiveUnique')
             button.btn.btn-outline-secondary(type='submit') Richiesta MASSIVA COL
 
         .col-md-6

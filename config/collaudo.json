@@ -1,7 +1,7 @@
 {
     "app": {
     "port": 3002,
-    "nameApp": "Check Iban CSEA Colaudo"
+    "nameApp": "Check Iban CSEA Collaudo"
   },
   "services": {
     "authSchema": "S2S",
