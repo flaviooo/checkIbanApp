@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "pm2Start": "pm2 start ./bin/www --name checkIban:3002 --time -o log/out.log -e log/err.log",
+    "pm2Start": "NODE_ENV='preProduzione' pm2 start ./bin/www --name checkIban:3002 --time -o log/out.log -e log/err.log",
      "start:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; node ./bin/www\"",
     "nodemon:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; nodemon ./bin/www\""
   },
