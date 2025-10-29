@@ -5,8 +5,8 @@
   },
   "services": {
     "authSchema": "S2S",
-    "urlMassive": "https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder/bulk",
-    "urlSingle": "https://bankingservices-sandbox.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder"
+    "urlMassive": "https://bankingservices.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder/bulk",
+    "urlSingle" : "https://bankingservices.pagopa.it/api/pagopa/banking/v4.0/utils/validate-account-holder"
   },
   "db": {
     "limitQuery": 999,
