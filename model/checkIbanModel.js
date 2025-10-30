@@ -9,7 +9,7 @@ pool = cfg.pool;
 module.exports = {
   getInfoAnagrafica() {
     return new Promise((resolve, reject) => {
-      const QUERY_DB = cfg.dbQuery;
+      const QUERY_DB = cfg.dbQueryFile;
 
       pool.query(QUERY_DB, (error, results) => {
         if (error) {
@@ -64,19 +64,19 @@ module.exports = {
       });
     });
   },
+
   getInfoAnagraficaFiltered(existingIbans = []) {
     return new Promise((resolve, reject) => {
-     // const QUERY_DB = cfg.dbQuery;
-      let temp = " AND iban NOT IN  ("
-  let QUERY_DB_A =  "select a.iban, a.partitaIva, a.ragioneSociale, a.riferimentoLegale, a.codiceFiscaleRapp from (SELECT distinct b.idbancaSoggetto, b.iban, s.partitaIva, s.riferimentoLegale, s.codiceFiscaleRapp, s.ragioneSociale FROM anagrafica.banca b left JOIN anagrafica.settoriattivita sa ON b.idSettoreAttivita = sa.idSettoreattivita JOIN anagrafica.soggetto s ON s.idsoggetto= sa.idsoggetto JOIN anagrafica.tipologiasoggetto ts ON sa.idTipologia=ts.idtipologia left JOIN anagrafica.dettagliotipologia dt ON sa.idTipologia=dt.idTipologia AND sa.iddettaglio = dt.iddettaglio WHERE test =0 AND ATTIVO = 1 AND predefinita = 1 and b.iban is not null and b.iban <> '' and partitaIva IS NOT NULL ";
-  let QUERY_DB_B = " )) a group by a.iban, a.partitaIva;" 
-
+    let QUERY_DB = cfg.dbQuery;
+    let QUERY_DB_B = cfg.dbQueryFileWithCondition;
+    let temp = " "
+        
     if (existingIbans.length) {
       // Costruisci la parte WHERE NOT IN (...) dinamicamente
       const escapedIbans = existingIbans.map(iban => pool.escape(iban)).join(',');
       temp += escapedIbans;
     }
- let QUERY_DB = QUERY_DB_A+temp+QUERY_DB_B;
+    QUERY_DB = QUERY_DB_A+temp+QUERY_DB_B;
   fs.writeFileSync(path.join(__dirname, '../test/QUERY_DB.sql'), QUERY_DB);
     //console.log("QUERY_DB:", QUERY_DB);
       pool.query(QUERY_DB, (error, results) => {

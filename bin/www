@@ -16,6 +16,8 @@ console.log('🔧  Config loaded → authSchema:', cfg.authSchema || 'S2S');
 console.log('🔧  Config loaded → dbHost:', cfg.dbHost);
 console.log('🔧  Config loaded → dbName:', cfg.dbName)
 console.log('🔧  Config loaded → dbUser:', cfg.dbUser);
+console.log('🔧  Config loaded → query:', cfg.dbQueryFile);
+console.log('🔧  Config loaded → query:', cfg.dbQueryFileWithCondition);
 console.log('🔧  Config loaded → dbMongoHost:', cfg.dbMongoHost)
 console.log('🔧  Config loaded → dbMongoName:', cfg.dbMongoName);
 
