@@ -10,8 +10,7 @@
   },
   "db": {
     "limitQuery": 999,
-    "query":  " )a group by a.iban, a.partitaIva;",
     "queryFile": "./config/queries/collaudo_query.sql",
-     "queryFileCondition": "./config/queries/collaudo_queryCondition.sql"
+    "queryFileCondition": "./config/queries/preProduzione_queryCondition.sql"
   }
 }
