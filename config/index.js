@@ -21,7 +21,7 @@ module.exports = {
   dbName: process.env.NAME_DB,
   //dbQuery: config.get('db.query'),
   dbQueryFile: fs.readFileSync( config.get('db.queryFile') || './config/queries/collaudo_query.sql', 'utf8'), 
-  dbQueryFileWithCondition: fs.readFileSync( config.get('db.queryFileCondition') || './config/queries/collaudo_queryCondition.sql', 'utf8'), 
+  dbQueryFileWithCondition: fs.readFileSync( config.get('db.queryFileCondition') || ' ', 'utf8'), 
 
   port: config.get('app.port'),
   apiKey: process.env.API_KEY,
