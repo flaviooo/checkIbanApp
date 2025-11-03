@@ -7,15 +7,8 @@ const https = require('https');
 const { IbanLogSingle, IbanLogMassive } = require('../model/checkIbanSchemaMongo');
 const { ibanLogImport } = require('../model/checkIbanSchemaMongoImport');
 const utility = require('./../utilities/utility');
-const apiKey = cfg.apiKey;
-const authSchema = cfg.authSchema;
 const massiveUrl = cfg.urlMassive;
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Auth-Schema': authSchema || 'S2S',
-  'Api-Key': apiKey
-};
+const headers = cfg.headers;
 
 router.get('/checkIbanMongoPage', async function (req, res) {
   try {

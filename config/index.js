@@ -5,7 +5,7 @@ const config = require('config');
 
 console.log("------------------"+process.env.NODE_APP_INSTANCE);
 
-// ✅ Crea un pool riutilizzabile
+
 module.exports = {
   
   NODE_ENV: process.env.NODE_ENV,
@@ -27,6 +27,12 @@ module.exports = {
   urlMassive: config.get('services.urlMassive'),
   urlSingle: config.get('services.urlSingle'),
   authSchema: config.get('services.authSchema'),
+  headers : {
+  "Content-Type": "application/json",
+  "Auth-Schema": "S2S",
+  "Api-Key": process.env.API_KEY
+},
+  
   pool : mysql.createPool({
     host: process.env.HOST_DB,
     user: process.env.USER_DB,

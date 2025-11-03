@@ -4,8 +4,6 @@ const path = require('path');
 
 pool = cfg.pool;
 
-//const mysql = require('mysql');
-
 module.exports = {
   getInfoAnagrafica() {
     return new Promise((resolve, reject) => {

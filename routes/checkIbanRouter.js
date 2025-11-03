@@ -10,15 +10,11 @@ const utility = require('./../utilities/utility');
 const axios = require('axios');
 const https = require('https');
 
-const apiKey = cfg.apiKey;
-const authSchema = cfg.authSchema;
+//const apiKey = cfg.apiKey;
+//const authSchema = cfg.authSchema;
 const massiveUrl = cfg.urlMassive;
+const headers = cfg.headers;
 
-const headers = {
-  'Content-Type': 'application/json',
-  'Auth-Schema': authSchema || 'S2S',
-  'Api-Key': apiKey
-};
 
 // Rotta per visualizzare il form
 router.get('/', async function (req, res) {
