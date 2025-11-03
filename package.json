@@ -5,24 +5,29 @@
   "scripts": {
     "start": "node ./bin/www",
     "pm2Start": "NODE_ENV='preProduzione' pm2 start ./bin/www --name checkIban:3002 --time -o log/out.log -e log/err.log",
-     "start:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; node ./bin/www\"",
+    "start:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; node ./bin/www\"",
     "nodemon:collaudoPowerShell": "powershell -Command \"$env:NODE_ENV='collaudo'; nodemon ./bin/www\""
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.7.4",
+    "body-parser": "^1.20.3",
     "config": "^4.1.1",
+    "cookie": "^0.7.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^17.2.0",
-    "express": "~4.16.1",
+    "express": "^4.21.2",
     "http-errors": "~1.6.3",
     "mariadb": "^3.4.4",
     "mongodb": "6.17",
     "mongoose": "^8.16.4",
-    "morgan": "~1.9.1",
+    "morgan": "^1.10.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.14.1",
-    "pug": "2.0.0-beta11"
+    "pug": "^3.0.3",
+    "qs": "^6.13.0",
+    "send": "^0.19.0",
+    "serve-static": "^1.16.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
