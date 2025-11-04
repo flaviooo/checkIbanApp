@@ -27,9 +27,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/checkIban', checkIbanRouter); // <-- 
 app.use('/checkIbanMongo', checkIbanMongoRouter); 
-
 app.use('/checkIbanSwagger', checkIbanSwagger); // <----
-console.log(app._router.stack.map(r => r.route ? r.route.path : r.name));
+//console.log(app._router.stack.map(r => r.route ? r.route.path : r.name));
 
 
 // catch 404 and forward to error handler
