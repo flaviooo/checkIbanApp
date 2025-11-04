@@ -8,6 +8,7 @@ var indexRouter     = require('./routes/index');
 var usersRouter     = require('./routes/users');
 var checkIbanRouter = require('./routes/checkIbanRouter');
 var checkIbanMongoRouter = require('./routes/checkIbanMongoRouter');
+var checkIbanSwagger = require('./routes/checkIbanSwaggerRouter');
 
 var app = express();
 
@@ -26,6 +27,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/checkIban', checkIbanRouter); // <-- 
 app.use('/checkIbanMongo', checkIbanMongoRouter); 
+
+app.use('/checkIbanSwagger', checkIbanSwagger); // <----
+console.log(app._router.stack.map(r => r.route ? r.route.path : r.name));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

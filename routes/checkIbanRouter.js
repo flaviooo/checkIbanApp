@@ -6,25 +6,21 @@ const router = express.Router();
 const { IbanLogSingle, IbanLogMassive } = require('../model/checkIbanSchemaMongo');
 const checkIbanModel = require('../model/checkIbanModel');
 const utility = require('./../utilities/utility');
-
 const axios = require('axios');
 const https = require('https');
-
-//const apiKey = cfg.apiKey;
-//const authSchema = cfg.authSchema;
 const massiveUrl = cfg.urlMassive;
 const headers = cfg.headers;
 
-
-// Rotta per visualizzare il form
 router.get('/', async function (req, res) {
   try {
+
     res.render('index', { title: "Index IBAN Page" });
   } catch (error) {
     console.error("❌ Errore rendering form:", error.message);
     res.status(500).send("Errore nella visualizzazione del form.");
   }
 });
+
 router.get('/singlePage', async function (req, res) {
   try {
     res.render('checkIbanViewSingle', { title: "Check IBAN Page" });
@@ -33,7 +29,59 @@ router.get('/singlePage', async function (req, res) {
     res.status(500).send("Errore nella visualizzazione del form.");
   }
 });
-
+/**
+ * @openapi
+ * /checkIban/single:
+ *   post:
+ *     summary: Verifica un IBAN singolo tramite API esterna e salva il log su MongoDB
+ *     description: >
+ *       Riceve un oggetto con l'IBAN e il codice fiscale o partita IVA del titolare,
+ *       invia la richiesta all'API esterna, e salva richiesta e risposta nel database MongoDB.
+ *     tags:
+ *       - IBAN
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - iban
+ *               - vatCode
+ *             properties:
+ *               iban:
+ *                 type: string
+ *                 example: "IT60X0542811101000000123456"
+ *                 description: IBAN del conto da verificare
+ *               vatCode:
+ *                 type: string
+ *                 example: "12345678901"
+ *                 description: Partita IVA del titolare del conto
+ *     responses:
+ *       200:
+ *         description: Verifica IBAN completata con successo
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: "Pagina renderizzata con il risultato della verifica IBAN"
+ *       400:
+ *         description: Richiesta non valida o parametri mancanti
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 error: "Parametri mancanti o errati"
+ *       500:
+ *         description: Errore interno del server o fallimento chiamata API
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 error: "Errore durante la verifica dell'IBAN. Riprova più tardi."
+ */
 router.post('/single', async function (req, res) {
   const { iban, vatCode } = req.body;
 
@@ -82,6 +130,20 @@ router.post('/single', async function (req, res) {
     });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get('/massiveVerificaPage', async function (req, res) {
   try {
