@@ -11,6 +11,5 @@
   "db": {
     "limitQuery": 999,
     "queryFile": "./config/queries/collaudo_query.sql",
-    "queryFileCondition": "./config/queries/preProduzione_queryCondition.sql"
-  }
+    "queryFileCondition": "./config/queries/queryCondition.sql"
 }
