@@ -131,6 +131,55 @@ router.post('/single', async function (req, res) {
   }
 });
 
+router.post('/singleJSON', async function (req, res) {
+  const { iban, vatCode } = req.body;
+
+  const bodyList = {
+    account: {
+      value: iban,
+      valueType: "IBAN",
+      bicCode: null
+    },
+    accountHolder: {
+      type: "PERSON_LEGAL",
+      vatCode,
+      fiscalCode: null,
+      taxCode: null
+    }
+  };
+
+  try {
+    // Salvataggio della richiesta su MongoDB
+    const logEntry = new IbanLogSingle({ request: bodyList });
+    const saved = await logEntry.save();
+    console.log(`✅ Richiesta salvata con ID: ${saved._id}`);
+    // Chiamata API (axios converte bodyList in JSON)
+    const response = await axios.post(cfg.urlSingle, bodyList, { headers, httpsAgent: new https.Agent({ rejectUnauthorized: false }) });
+    //console.log('📬 Risposta API:', response.data);
+    // Aggiorna il log con la risposta
+    const ibr = await IbanLogSingle.findByIdAndUpdate(saved._id, { response: response.data });
+    console.log(`✅ Risposta salvata per ID su MongoDB: ${saved._id}`);
+    console.log(`✅ Log aggiornato con ID: ${JSON.stringify(saved._id, null, 2)}`);
+    // Risposta all'utente
+    res.json({  result: response.data });
+
+  } catch (error) {
+    console.error("❌ Errore durante la verifica API o salvataggio:", error.message);
+    if (error.response) {
+      console.error("Dettagli errore API:", error.response.status, error.response.data);
+    }
+    if (error.request && !error.response) {
+      console.error("Nessuna risposta ricevuta dall'API:", error.request);
+    }
+
+    // Risposta errore all'utente
+    res.status(500).render('checkIbanViewSingle', {
+      title: 'Errore Verifica',
+      result: { error: 'Errore durante la verifica dell\'IBAN. Riprova più tardi.' }
+    });
+  }
+});
+
 
 
 
